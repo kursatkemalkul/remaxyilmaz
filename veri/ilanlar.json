@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ornek1",
+    "baslik": "ÖRNEK İLAN — Merter'de Yeni Binada 3+1 Daire",
+    "fiyat": 5500000,
+    "tip": "satilik",
+    "durum": "aktif",
+    "kategori": "Daire",
+    "il": "İstanbul",
+    "ilce": "Güngören",
+    "mahalle": "Merter",
+    "m2brut": "125",
+    "m2net": "98",
+    "odaSayisi": "3+1",
+    "binaYasi": "3",
+    "bulunduguKat": "4",
+    "katSayisi": "8",
+    "isitma": "Kombi (Doğalgaz)",
+    "banyoSayisi": "2",
+    "balkon": "Var",
+    "esyali": "Hayır",
+    "aidat": "1500",
+    "krediyeUygun": "Evet",
+    "tapuDurumu": "Kat Mülkiyetli",
+    "aciklama": "Bu bir örnek ilandır — yönetim panelinden silebilirsiniz.\n\nMerter'de, metroya yürüme mesafesinde, yeni binada ferah 3+1 daire. Güney cephe, ebeveyn banyolu, ankastre mutfak.",
+    "fotograflar": ["fotograflar/ornek1/1.jpg", "fotograflar/ornek1/2.jpg", "fotograflar/ornek1/3.jpg"],
+    "tarih": 1751400000000
+  }
+]

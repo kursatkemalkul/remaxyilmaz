@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yönetim Paneli | RE/MAX Yılmaz Kanyılmaz</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/jpeg" href="gorseller/remax-balon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/stil.css">
+</head>
+<body class="yonetim-govde">
+
+<header class="ustbar">
+  <div class="sarici ustbar-ic">
+    <a class="marka" href="index.html">
+      <img src="gorseller/remax-balon.jpg" alt="RE/MAX">
+      <span class="marka-yazi">
+        <span class="ad">Yönetim Paneli</span><br>
+        <span class="ofis"><span class="re">RE/MAX</span> <span class="mx">MÜJDE</span></span>
+      </span>
+    </a>
+    <nav class="ust-linkler">
+      <a href="index.html">Siteye Dön</a>
+    </nav>
+  </div>
+</header>
+
+<div class="panel">
+
+  <!-- GİRİŞ EKRANI -->
+  <div id="girisEkrani" class="gizli">
+    <div class="panel-baslik"><h1>Giriş</h1></div>
+    <div class="kart">
+      <p style="margin-bottom:16px;color:var(--soluk);font-size:14.5px">
+        Panele girmek için size verilen <strong>erişim anahtarını</strong> yapıştırın.
+        Anahtar bu telefona kaydedilir, bir daha girmeniz gerekmez.
+      </p>
+      <div class="form-grup">
+        <label for="anahtarGirdi">Erişim Anahtarı</label>
+        <input type="password" id="anahtarGirdi" placeholder="github_pat_..." autocomplete="off">
+      </div>
+      <button class="btn btn-kirmizi tam-btn" id="girisBtn">Giriş Yap</button>
+    </div>
+  </div>
+
+  <!-- İLAN LİSTESİ -->
+  <div id="listeEkrani" class="gizli">
+    <div class="panel-baslik">
+      <h1>İlanlarım</h1>
+      <button class="btn btn-kirmizi" id="yeniIlanBtn">+ Yeni İlan</button>
+    </div>
+    <div id="ilanListesi"></div>
+    <div class="bos-durum gizli" id="listeBos">
+      <div class="buyuk">Henüz ilan yok</div>
+      <div>"+ Yeni İlan" butonuyla ilk ilanınızı ekleyin.</div>
+    </div>
+    <div style="text-align:center;margin-top:26px">
+      <button class="kucuk-btn" id="cikisBtn">Çıkış Yap</button>
+    </div>
+  </div>
+
+  <!-- İLAN FORMU -->
+  <div id="formEkrani" class="gizli">
+    <div class="panel-baslik">
+      <h1 id="formBaslik">Yeni İlan</h1>
+      <button class="kucuk-btn" id="formGeriBtn">← Vazgeç</button>
+    </div>
+    <div class="kart">
+      <div class="form-grup">
+        <label>İlan Tipi</label>
+        <div class="sekme-btnler" id="tipSecim">
+          <button type="button" class="filtre secili" data-deger="satilik">SATILIK</button>
+          <button type="button" class="filtre" data-deger="kiralik">KİRALIK</button>
+        </div>
+      </div>
+      <div class="form-grup">
+        <label for="fBaslik">İlan Başlığı</label>
+        <input id="fBaslik" placeholder="Örn: Kağıthane Merkez'de Yeni Binada 3+1 Daire">
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fFiyat">Fiyat (TL)</label>
+          <input id="fFiyat" type="text" inputmode="numeric" placeholder="Örn: 5500000">
+        </div>
+        <div class="form-grup">
+          <label for="fKategori">Kategori</label>
+          <select id="fKategori">
+            <option>Daire</option><option>Residence</option><option>Müstakil Ev</option>
+            <option>Villa</option><option>İş Yeri</option><option>Ofis</option>
+            <option>Arsa</option><option>Bina</option><option>Diğer</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fIlce">İlçe</label>
+          <input id="fIlce" list="ilceListe" placeholder="Örn: Güngören">
+          <datalist id="ilceListe">
+            <option value="Güngören"></option><option value="Bahçelievler"></option>
+            <option value="Bakırköy"></option><option value="Zeytinburnu"></option>
+            <option value="Fatih"></option><option value="Esenler"></option>
+            <option value="Bağcılar"></option><option value="Küçükçekmece"></option>
+          </datalist>
+        </div>
+        <div class="form-grup">
+          <label for="fMahalle">Mahalle / Semt <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fMahalle" placeholder="Örn: Merter">
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fM2brut">Brüt m² <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fM2brut" type="text" inputmode="numeric" placeholder="Örn: 120">
+        </div>
+        <div class="form-grup">
+          <label for="fM2net">Net m² <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fM2net" type="text" inputmode="numeric" placeholder="Örn: 95">
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fOda">Oda Sayısı <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fOda" list="odaListe" placeholder="Örn: 3+1">
+          <datalist id="odaListe">
+            <option value="1+0"></option><option value="1+1"></option><option value="2+1"></option>
+            <option value="3+1"></option><option value="4+1"></option><option value="5+1"></option>
+          </datalist>
+        </div>
+        <div class="form-grup">
+          <label for="fBinaYasi">Bina Yaşı <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fBinaYasi" placeholder="Örn: 5">
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fKat">Bulunduğu Kat <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fKat" placeholder="Örn: 3">
+        </div>
+        <div class="form-grup">
+          <label for="fKatSayisi">Binadaki Kat Sayısı <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fKatSayisi" placeholder="Örn: 8">
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fIsitma">Isıtma <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fIsitma" list="isitmaListe" placeholder="Örn: Kombi (Doğalgaz)">
+          <datalist id="isitmaListe">
+            <option value="Kombi (Doğalgaz)"></option><option value="Merkezi"></option>
+            <option value="Merkezi (Pay Ölçer)"></option><option value="Yerden Isıtma"></option>
+            <option value="Klima"></option><option value="Yok"></option>
+          </datalist>
+        </div>
+        <div class="form-grup">
+          <label for="fBanyo">Banyo Sayısı <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fBanyo" placeholder="Örn: 2">
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fBalkon">Balkon <span class="istege">(isteğe bağlı)</span></label>
+          <select id="fBalkon"><option value=""></option><option>Var</option><option>Yok</option></select>
+        </div>
+        <div class="form-grup">
+          <label for="fEsyali">Eşyalı <span class="istege">(isteğe bağlı)</span></label>
+          <select id="fEsyali"><option value=""></option><option>Evet</option><option>Hayır</option></select>
+        </div>
+      </div>
+      <div class="form-satir">
+        <div class="form-grup">
+          <label for="fAidat">Aidat (TL) <span class="istege">(isteğe bağlı)</span></label>
+          <input id="fAidat" type="text" inputmode="numeric" placeholder="Örn: 1500">
+        </div>
+        <div class="form-grup">
+          <label for="fKredi">Krediye Uygun <span class="istege">(isteğe bağlı)</span></label>
+          <select id="fKredi"><option value=""></option><option>Evet</option><option>Hayır</option></select>
+        </div>
+      </div>
+      <div class="form-grup">
+        <label for="fTapu">Tapu Durumu <span class="istege">(isteğe bağlı)</span></label>
+        <input id="fTapu" list="tapuListe" placeholder="Örn: Kat Mülkiyetli">
+        <datalist id="tapuListe">
+          <option value="Kat Mülkiyetli"></option><option value="Kat İrtifaklı"></option>
+          <option value="Arsa Tapulu"></option><option value="Hisseli Tapu"></option>
+        </datalist>
+      </div>
+      <div class="form-grup">
+        <label for="fAciklama">İlan Açıklaması</label>
+        <textarea id="fAciklama" placeholder="Dairenin özelliklerini, konumunu ve öne çıkan yönlerini yazın…"></textarea>
+      </div>
+      <div class="form-grup">
+        <label>Fotoğraflar <span class="istege">(ilk fotoğraf kapak olur)</span></label>
+        <input type="file" id="fFotolar" accept="image/*" multiple style="display:none">
+        <button type="button" class="btn btn-cerceve tam-btn" id="fotoEkleBtn">📷 Fotoğraf Ekle</button>
+        <div class="foto-onizleme" id="fotoOnizleme"></div>
+      </div>
+      <div class="form-grup" id="satildiGrup">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+          <input type="checkbox" id="fSatildi" style="width:20px;height:20px">
+          <span id="satildiEtiket">Satıldı / Kiralandı olarak işaretle</span>
+        </label>
+      </div>
+      <button class="btn btn-kirmizi tam-btn" id="yayinlaBtn" style="font-size:16px;padding:15px">YAYINLA</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="durum-mesaj gizli" id="durumMesaj"></div>
+
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
