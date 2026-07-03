@@ -17,7 +17,7 @@
     var konum = [ilan.mahalle, ilan.ilce, ilan.il].filter(Boolean).join(", ");
     var fiyat = (Number(ilan.fiyat)||0).toLocaleString("tr-TR") + " TL" + (kiralik ? ' <span class="donem">/ ay</span>' : "");
 
-    document.title = kacis(ilan.baslik) + " | Yılmaz Kanyılmaz — RE/MAX Müjde";
+    document.title = kacis(ilan.baslik) + " | Yılmaz Kanyılmaz — RE/MAX";
 
     var ozellikler = [
       ["İlan Tipi", kiralik ? "Kiralık" : "Satılık"],

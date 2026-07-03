@@ -11,8 +11,6 @@
   document.getElementById("heroWhatsapp").href = waHref;
   document.getElementById("iletisimTel").href = telHref;
   document.getElementById("iletisimTelYazi").textContent = AYAR.telefonGoster;
-  document.getElementById("iletisimOfisTel").href = "tel:" + AYAR.ofisTel;
-  document.getElementById("iletisimOfisYazi").textContent = AYAR.ofisTelGoster;
   document.getElementById("iletisimEposta").href = "mailto:" + AYAR.eposta;
   document.getElementById("iletisimEpostaYazi").textContent = AYAR.eposta;
   document.getElementById("iletisimAdres").textContent = "📍 " + AYAR.adres;
