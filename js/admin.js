@@ -5,8 +5,9 @@
   var ilanlar = [];
   var jsonSha = null;
   var duzenlenenId = null;      // null = yeni ilan
-  var mevcutFotolar = [];       // düzenlemede repodaki mevcut fotoğraf yolları
-  var yeniFotolar = [];         // {base64, onizlemeUrl}
+  // Tek sıralı fotoğraf listesi: {kaynak:'repo', yol} veya {kaynak:'yeni', base64, onizlemeUrl}
+  // İlk eleman = kapak. Sıralama sürükleme ya da "KAPAK YAP" ile değişir.
+  var fotolar = [];
   var mesgulMu = false;
 
   // ---------- Yardımcılar ----------
@@ -124,8 +125,7 @@
   // ---------- Form ----------
   function formTemizle(){
     duzenlenenId = null;
-    mevcutFotolar = [];
-    yeniFotolar = [];
+    fotolar = [];
     $("formBaslik").textContent = "Yeni İlan";
     tipAyarla("satilik");
     ["fBaslik","fFiyat","fMahalle","fM2brut","fM2net","fOda","fBinaYasi","fKat",
@@ -139,8 +139,7 @@
 
   function formDoldur(ilan){
     duzenlenenId = ilan.id;
-    mevcutFotolar = (ilan.fotograflar || []).slice();
-    yeniFotolar = [];
+    fotolar = (ilan.fotograflar || []).map(function(yol){ return {kaynak: "repo", yol: yol}; });
     $("formBaslik").textContent = "İlanı Düzenle";
     tipAyarla(ilan.tip || "satilik");
     $("fBaslik").value = ilan.baslik || "";
@@ -179,18 +178,17 @@
   // ---------- Fotoğraflar ----------
   function fotoOnizle(){
     var kutu = $("fotoOnizleme");
-    var parcalar = [];
-    mevcutFotolar.forEach(function(yol, i){
-      parcalar.push('<div class="kutu"><img src="' + yol + '">' +
-        '<button type="button" class="sil" data-mevcut="' + i + '">✕</button>' +
-        (i === 0 && parcalar.length === 0 ? '<span class="kapak">KAPAK</span>' : "") + '</div>');
-    });
-    yeniFotolar.forEach(function(f, i){
-      parcalar.push('<div class="kutu"><img src="' + f.onizlemeUrl + '">' +
-        '<button type="button" class="sil" data-yeni="' + i + '">✕</button>' +
-        (mevcutFotolar.length === 0 && i === 0 ? '<span class="kapak">KAPAK</span>' : "") + '</div>');
-    });
-    kutu.innerHTML = parcalar.join("");
+    kutu.innerHTML = fotolar.map(function(f, i){
+      var src = f.kaynak === "repo" ? f.yol : f.onizlemeUrl;
+      return '<div class="kutu" data-i="' + i + '">' +
+        '<img src="' + src + '" draggable="false">' +
+        '<span class="tasi" data-tasi="' + i + '" title="Sürükleyip sıralayın">⠿</span>' +
+        '<button type="button" class="sil" data-sil="' + i + '">✕</button>' +
+        (i === 0 ? '<span class="kapak">KAPAK</span>' :
+          '<button type="button" class="kapak-yap" data-kapak="' + i + '">KAPAK YAP</button>') +
+      '</div>';
+    }).join("");
+    $("fotoIpucu").classList.toggle("gizli", fotolar.length < 2);
   }
 
   function fotoIsle(dosya){
@@ -223,22 +221,26 @@
     var fiyat = parseInt($("fFiyat").value.replace(/[^\d]/g,""), 10);
     if(!baslik){ mesaj("İlan başlığı yazın.", "hata"); return; }
     if(!fiyat){ mesaj("Fiyat yazın.", "hata"); return; }
-    if(mevcutFotolar.length + yeniFotolar.length === 0){ mesaj("En az bir fotoğraf ekleyin.", "hata"); return; }
+    if(fotolar.length === 0){ mesaj("En az bir fotoğraf ekleyin.", "hata"); return; }
 
     mesgulMu = true;
     $("yayinlaBtn").textContent = "YAYINLANIYOR…";
 
     var id = duzenlenenId || (Date.now().toString(36) + Math.random().toString(36).slice(2,6));
-    var fotoYollari = mevcutFotolar.slice();
+    var fotoYollari = new Array(fotolar.length);
+    var toplamYeni = fotolar.filter(function(f){ return f.kaynak === "yeni"; }).length;
+    var yuklenen = 0;
     var sira = Promise.resolve();
 
-    // Yeni fotoğrafları sırayla yükle
-    yeniFotolar.forEach(function(f, i){
+    // Fotoğrafları ekrandaki sırayla kaydet; yeni olanları sırayla yükle
+    fotolar.forEach(function(f, i){
+      if(f.kaynak === "repo"){ fotoYollari[i] = f.yol; return; }
       sira = sira.then(function(){
-        mesaj("Fotoğraf yükleniyor " + (i+1) + " / " + yeniFotolar.length + "…", "", true);
+        yuklenen++;
+        mesaj("Fotoğraf yükleniyor " + yuklenen + " / " + toplamYeni + "…", "", true);
         var yol = "fotograflar/" + id + "/" + Date.now().toString(36) + "-" + i + ".jpg";
         return ghYaz(yol, f.base64, "Fotoğraf: " + baslik).then(function(){
-          fotoYollari.push(yol);
+          fotoYollari[i] = yol;
         });
       });
     });
@@ -345,19 +347,68 @@
     mesaj("Fotoğraflar hazırlanıyor…", "", true);
     var s = Promise.resolve();
     dosyalar.forEach(function(d){
-      s = s.then(function(){ return fotoIsle(d).then(function(f){ yeniFotolar.push(f); fotoOnizle(); }); });
+      s = s.then(function(){ return fotoIsle(d).then(function(f){
+        fotolar.push({kaynak: "yeni", base64: f.base64, onizlemeUrl: f.onizlemeUrl});
+        fotoOnizle();
+      }); });
     });
     s.then(function(){ mesaj("✓ " + dosyalar.length + " fotoğraf eklendi", "basari"); })
      .catch(function(){ mesaj("Bir fotoğraf işlenemedi.", "hata"); });
   });
 
   $("fotoOnizleme").addEventListener("click", function(e){
-    var b = e.target.closest(".sil");
-    if(!b) return;
-    if(b.dataset.mevcut != null) mevcutFotolar.splice(Number(b.dataset.mevcut), 1);
-    if(b.dataset.yeni != null) yeniFotolar.splice(Number(b.dataset.yeni), 1);
-    fotoOnizle();
+    var sil = e.target.closest(".sil");
+    if(sil){ fotolar.splice(Number(sil.dataset.sil), 1); fotoOnizle(); return; }
+    var kapak = e.target.closest(".kapak-yap");
+    if(kapak){
+      var f = fotolar.splice(Number(kapak.dataset.kapak), 1)[0];
+      fotolar.unshift(f);
+      fotoOnizle();
+      mesaj("✓ Kapak fotoğrafı değişti", "basari");
+    }
   });
+
+  // Sürükleyerek sıralama (⠿ tutamacından) — telefonda ve bilgisayarda çalışır
+  (function(){
+    var kutu = $("fotoOnizleme");
+    var surukleIndex = null;
+    var hedefIndex = null;
+    function isaretle(){
+      kutu.querySelectorAll(".kutu").forEach(function(k){
+        var i = Number(k.dataset.i);
+        k.classList.toggle("suruklenen", i === surukleIndex);
+        k.classList.toggle("hedef", i === hedefIndex && i !== surukleIndex);
+      });
+    }
+    kutu.addEventListener("pointerdown", function(e){
+      var tasi = e.target.closest(".tasi");
+      if(!tasi) return;
+      e.preventDefault();
+      surukleIndex = Number(tasi.dataset.tasi);
+      hedefIndex = null;
+      kutu.setPointerCapture(e.pointerId);
+      isaretle();
+    });
+    kutu.addEventListener("pointermove", function(e){
+      if(surukleIndex == null) return;
+      e.preventDefault();
+      var el = document.elementFromPoint(e.clientX, e.clientY);
+      var hedefKutu = el && el.closest ? el.closest("#fotoOnizleme .kutu") : null;
+      hedefIndex = hedefKutu ? Number(hedefKutu.dataset.i) : null;
+      isaretle();
+    });
+    function birak(e){
+      if(surukleIndex == null) return;
+      if(hedefIndex != null && hedefIndex !== surukleIndex){
+        var f = fotolar.splice(surukleIndex, 1)[0];
+        fotolar.splice(hedefIndex, 0, f);
+      }
+      surukleIndex = null; hedefIndex = null;
+      fotoOnizle();
+    }
+    kutu.addEventListener("pointerup", birak);
+    kutu.addEventListener("pointercancel", birak);
+  })();
 
   $("ilanListesi").addEventListener("click", function(e){
     var d = e.target.closest("[data-duzenle]");
