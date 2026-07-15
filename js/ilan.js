@@ -19,11 +19,15 @@
 
     document.title = kacis(ilan.baslik) + " | Yılmaz Kanyılmaz — RE/MAX";
 
+    function m2Yaz(deger){
+      if(!deger) return "";
+      return String(deger).replace(/\s*(m2|m²|metrekare)\s*/gi, "").trim() + " m²";
+    }
     var ozellikler = [
       ["İlan Tipi", kiralik ? "Kiralık" : "Satılık"],
       ["Kategori", ilan.kategori],
-      ["Brüt m²", ilan.m2brut ? ilan.m2brut + " m²" : ""],
-      ["Net m²", ilan.m2net ? ilan.m2net + " m²" : ""],
+      ["Brüt m²", m2Yaz(ilan.m2brut)],
+      ["Net m²", m2Yaz(ilan.m2net)],
       ["Oda Sayısı", ilan.odaSayisi],
       ["Bina Yaşı", ilan.binaYasi],
       ["Bulunduğu Kat", ilan.bulunduguKat],

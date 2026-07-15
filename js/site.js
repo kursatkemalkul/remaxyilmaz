@@ -32,7 +32,7 @@
     var kapak = (ilan.fotograflar && ilan.fotograflar.length) ? ilan.fotograflar[0] : "";
     var satildi = ilan.durum === "satildi";
     var ozet = [];
-    if(ilan.m2brut) ozet.push(ilan.m2brut + " m²");
+    if(ilan.m2brut) ozet.push(String(ilan.m2brut).replace(/\s*(m2|m²|metrekare)\s*/gi, "").trim() + " m²");
     if(ilan.odaSayisi) ozet.push(ilan.odaSayisi);
     if(ilan.bulunduguKat) ozet.push(ilan.bulunduguKat + ". kat");
     var konum = [ilan.mahalle, ilan.ilce, ilan.il].filter(Boolean).join(", ");
